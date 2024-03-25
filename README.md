@@ -1,3 +1,7 @@
 # base-project
+We are creating a virtual bank where users can create bank accounts, check their balance, withdraw and deposit money. These bank accounts will require a password to be accessed. We will use files to keep track of user accounts, passwords, and balances.
 
-Add description of what happened each iteration
+# Iteration 1
+Emma: withdraw money method
+Eric: deposit money method
+Scott: create bank account object
