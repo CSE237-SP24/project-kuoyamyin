@@ -10,8 +10,8 @@ public class Menu {
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
 		mainMenu.displayingOptions();
-		String answer = mainMenu.getValidUserInput();
-		mainMenu.processingUserSelection(answer);
+		int choice = mainMenu.getValidUserInput();
+		mainMenu.processingUserSelection(choice);
 	}
 	
 	public Menu() {
@@ -20,24 +20,32 @@ public class Menu {
 	}
 	
 	public void displayingOptions() {
-		System.out.println("Check balance? (y/n)");
+		System.out.println("1. Check balance");
+		System.out.println("2. Deposit money");
+		System.out.println("3. Withdraw money");
+		System.out.println("Select an action (enter number):");
 	}
 	
-	public String getValidUserInput() {
-		String answer = in.nextLine();
-		while(!answer.equals("y") && !answer.equals("n")) {
-			System.out.println("Invalid answer.");
-			System.out.println("Check balance? (y/n)");
-			answer = in.nextLine();
+	public int getValidUserInput() {
+		int choice = in.nextInt();
+		while(choice < 1 || choice > 3) {
+			System.out.println("Invalid choice.");
+			System.out.println("1. Check balance");
+			System.out.println("2. Deposit money");
+			System.out.println("3. Withdraw money");
+			System.out.println("Select an action (enter number):");
+			choice = in.nextInt();
 		}
-		return answer;
+		return choice;
 	}
 	
-	public void processingUserSelection(String answer) {
-		if (answer.equals("y")) {
+	public void processingUserSelection(int choice) {
+		if (choice == 1) {
 			System.out.println("Balance: " + account.getBalance());
-		} else {
-			System.out.println("No balance displayed");
+		} else if (choice == 2) {
+			// call method for running deposit
+		} else if (choice == 3) {
+			// call method for running withdraw
 		}
 	}
 	
