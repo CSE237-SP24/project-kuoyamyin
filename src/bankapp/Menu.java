@@ -43,9 +43,9 @@ public class Menu {
 		if (choice == 1) {
 			System.out.println("Balance: " + account.getBalance());
 		} else if (choice == 2) {
-			// call method for running deposit
+			// call methods for running deposit
 		} else if (choice == 3) {
-			// call method for running withdraw
+			// call methods for running withdraw
 		}
 	}
 	
