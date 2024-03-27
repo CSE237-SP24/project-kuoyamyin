@@ -39,13 +39,26 @@ public class Menu {
 		return choice;
 	}
 	
+	public double getValidWithdrawAmount() {
+		double amount = in.nextDouble();
+		while (amount<0 || amount>account.getBalance()) {
+			System.out.println("Amount must be 0 to " + account.getBalance());
+			System.out.println("How much would you like to withdraw?");
+			amount = in.nextDouble();
+		}
+		return amount;
+	}
+	
 	public void processingUserSelection(int choice) {
 		if (choice == 1) {
 			System.out.println("Balance: " + account.getBalance());
 		} else if (choice == 2) {
 			// call methods for running deposit
 		} else if (choice == 3) {
-			// call methods for running withdraw
+			System.out.println("How much would you like to withdraw?");
+			double withdrawAmount = getValidWithdrawAmount(); 
+			account.withdraw(withdrawAmount); // when can i call getValidAmount?
+			System.out.println("Amount withdrew: " + withdrawAmount + ". New balance = " + account.getBalance());
 		}
 	}
 	

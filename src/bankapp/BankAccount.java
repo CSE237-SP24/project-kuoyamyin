@@ -17,8 +17,19 @@ public class BankAccount {
 		this.balance += amount;
 	}
 	
+	public void withdraw(double withdrawAmt) {
+		if(withdrawAmt < 0) {
+			throw new IllegalArgumentException("Amount must be positive");
+		}
+		
+		this.balance -= withdrawAmt;
+	}
+	
 	//getters and setters - not tested
 	public double getBalance() {
 		return this.balance;
 	}
+
+
+
 }
