@@ -21,7 +21,9 @@ public class BankAccount {
 		if(withdrawAmt < 0) {
 			throw new IllegalArgumentException("Amount must be positive");
 		}
-		
+		if (withdrawAmt > balance) {
+			throw new IllegalArgumentException("Amount must be less than current balance");
+		}
 		this.balance -= withdrawAmt;
 	}
 	
