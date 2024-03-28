@@ -65,6 +65,13 @@ public class Menu {
 			System.out.println("Balance: " + account.getBalance());
 		} else if (choice == 2) {
 			// call methods for running deposit
+			System.out.print("Enter an amount to deposit: ");
+			depositAmount = in.nextDouble();
+			while(depositAmount < 0) {
+				System.out.print("Amount must be positive");
+				System.out.print("Enter an amount to deposit: ");
+				depositAmount = in.nextDouble();
+			}
 		} else if (choice == 3) {
 			System.out.println("How much would you like to withdraw?");
 			double withdrawAmount = getValidWithdrawAmount(); 

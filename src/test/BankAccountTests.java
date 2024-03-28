@@ -36,4 +36,38 @@ class BankAccountTests {
 		}
 	}
 
+	@Test
+	void testZeroDeposit() {
+		//1. Setup Objects	
+		BankAccount testAccount = new BankAccount();
+		
+		//2. Call the method being tested
+		testAccount.deposit(0);
+		
+		//3. Use assertions to verify results
+		assertEquals(0, testAccount.getBalance(), 0.01);	
+	}
+	
+	@Test
+	void testMultipleDeposit() {
+		BankAccount testAccount = new BankAccount();
+		
+		//2. Call the method being tested
+		testAccount.deposit(25);
+		testAccount.deposit(50);
+		
+		//3. Use assertions to verify results
+		assertEquals(75.0, testAccount.getBalance(), 0.01);	
+	}
+	
+	@Test
+	void testDecimalDeposit() {
+		BankAccount testAccount = new BankAccount();
+		
+		//2. Call the method being tested
+		testAccount.deposit(12.34);
+		
+		//3. Use assertions to verify results
+		assertEquals(12.34, testAccount.getBalance(), 0.01);	
+	}
 }
