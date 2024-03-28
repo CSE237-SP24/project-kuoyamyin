@@ -7,6 +7,7 @@ public class Menu {
 	private Scanner in;
 	private BankAccount account;
 	private boolean exit;
+	private double depositAmount;
 
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
