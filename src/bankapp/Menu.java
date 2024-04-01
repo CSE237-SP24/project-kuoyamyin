@@ -1,5 +1,9 @@
 package bankapp;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -8,9 +12,14 @@ public class Menu {
 	private Scanner in;
 	private BankAccount account;
 	private boolean exit;
+	private File namesFile;
+	private File passwordsFile;
+	private File balancesFile;
 
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
+		mainMenu.getFiles();
+		mainMenu.loginOrCreateAccount();
 		mainMenu.runBankFeatures();
 	}
 	
@@ -20,11 +29,91 @@ public class Menu {
 		this.exit = false;
 	}
 	
+	public void getFiles() {
+		namesFile = new File("names.txt");
+		passwordsFile = new File("passwords.txt");
+		balancesFile = new File("balances.txt");
+	}
+	
+	public void loginOrCreateAccount() {
+		int minChoice = 1;
+		int maxChoice = 3;
+		this.loginOrCreateAccountDisplay();
+		int choice = this.getValidUserInput(minChoice, maxChoice);
+		this.processingUserLoginSelection(choice);
+	}
+	
+	public void loginOrCreateAccountDisplay() {
+		System.out.println("");
+		System.out.println("1. Login");
+		System.out.println("2. Create Account");
+		System.out.println("3. Exit");
+		System.out.println("Select an action (enter number):");
+	}
+	
+	public void processingUserLoginSelection(int choice) {
+		if (choice == 1) {
+			// method for login
+		} else if (choice == 2) {
+			createAccountAction();
+		} else if (choice == 3) {
+			exit = true;
+			System.out.println("Account exited");
+		}
+	}
+	
+	private void createAccountAction() {
+		in.nextLine();
+		System.out.println("What is your name?");
+		String name = in.nextLine();
+		System.out.println("What will your password be?");
+		String password = in.nextLine();
+		addNewName(name);
+		addNewPassword(password);
+		addNewBalance();
+		
+	}
+
+	private void addNewBalance() {
+		try {
+			PrintWriter balancesWriter = new PrintWriter(new FileOutputStream(balancesFile, true));
+			balancesWriter.println(0);
+			balancesWriter.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("balancesFile not found.");
+			e.printStackTrace();
+		}
+	}
+
+	private void addNewPassword(String password) {
+		try {
+			PrintWriter passwordsWriter = new PrintWriter(new FileOutputStream(passwordsFile, true));
+			passwordsWriter.println(password);
+			passwordsWriter.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("passwordsFile not found.");
+			e.printStackTrace();
+		}
+	}
+
+	private void addNewName(String name) {
+		try {
+			PrintWriter namesWriter = new PrintWriter(new FileOutputStream(namesFile, true));
+			namesWriter.println(name);
+			namesWriter.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("namesFile not found.");
+			e.printStackTrace();
+		}
+	}
+	
 	public void runBankFeatures() {
 		while(!exit) {
+			int minChoice = 1;
+			int maxChoice = 4;
 			this.displayingOptions();
-			int choice = this.getValidUserInput();
-			this.processingUserSelection(choice);
+			int choice = this.getValidUserInput(minChoice, maxChoice);
+			this.processingUserActionSelection(choice);
 		}
 	}
 	
@@ -37,13 +126,13 @@ public class Menu {
 		System.out.println("Select an action (enter number):");
 	}
 	
-	public int getValidUserInput() {
+	public int getValidUserInput(int min, int max) {
 		int choice = 0;
 		boolean invalidChoice = true;
 		while(invalidChoice) {
 			try {
 				choice = in.nextInt();
-				if (choice < 1 || choice > 4) {
+				if (choice < min || choice > max) {
 					System.out.println("Invalid choice");
 					displayingOptions();
 				} else {
@@ -101,7 +190,7 @@ public class Menu {
 		return amount;
 	}
 	
-	public void processingUserSelection(int choice) {
+	public void processingUserActionSelection(int choice) {
 		if (choice == 1) {
 			System.out.println("Balance: " + String.format("%.2f", account.getBalance()));
 		} else if (choice == 2) {
