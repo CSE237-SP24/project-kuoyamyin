@@ -6,17 +6,23 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Menu {
 	
 	private Scanner in;
+	private Scanner usernameOutput;
+	private Scanner passwordOutput;
+	private Scanner balanceOutput;
 	private BankAccount account;
 	private boolean exit;
+	private boolean loginComplete;
 	private File namesFile;
 	private File passwordsFile;
 	private File balancesFile;
 
 	public static void main(String[] args) {
+	
 		Menu mainMenu = new Menu();
 		mainMenu.getFiles();
 		mainMenu.loginOrCreateAccount();
@@ -25,8 +31,12 @@ public class Menu {
 	
 	public Menu() {
 		this.in = new Scanner(System.in);
+		this.usernameOutput = new Scanner("names.txt");
+		this.passwordOutput = new Scanner("passwords.txt");
+		this.balanceOutput = new Scanner("balances.txt");
 		this.account = new BankAccount();
 		this.exit = false;
+		this.loginComplete = false;
 	}
 	
 	public void getFiles() {
@@ -53,7 +63,7 @@ public class Menu {
 	
 	public void processingUserLoginSelection(int choice) {
 		if (choice == 1) {
-			// method for login
+			logInAction();
 		} else if (choice == 2) {
 			createAccountAction();
 		} else if (choice == 3) {
@@ -221,4 +231,37 @@ public class Menu {
 	public BankAccount getAccount() {
 		return account;
 	}
+	
+	public void logInAction() {
+		ArrayList<String> usernames = new ArrayList<>();
+		ArrayList<String> passwords = new ArrayList<>();
+		ArrayList<Double> balances = new ArrayList<>();
+		while(usernameOutput.hasNextLine()) {
+			usernames.add(usernameOutput.nextLine());
+		}
+		while(passwordOutput.hasNextLine()) {
+			passwords.add(usernameOutput.nextLine());
+		}
+		while(balanceOutput.hasNextDouble()) {
+			balances.add(usernameOutput.nextDouble());
+		}
+		
+		while (!loginComplete) {
+			System.out.println("Username: ");
+			String username = in.nextLine();
+			System.out.println("Password: ");
+			String password = in.nextLine();
+			
+			int index = usernames.indexOf(username);
+			double currentBalance = balances.get(index);
+			if (passwords.get(index) == password) {
+				account.setBalance(currentBalance);
+				loginComplete = true;
+			} else {
+				System.out.println("login unsuccessful");
+			}
+		}
+		
+	}
+	
 }

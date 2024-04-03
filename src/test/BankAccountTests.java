@@ -70,4 +70,5 @@ class BankAccountTests {
 		//3. Use assertions to verify results
 		assertEquals(12.34, testAccount.getBalance(), 0.01);	
 	}
+	
 }
