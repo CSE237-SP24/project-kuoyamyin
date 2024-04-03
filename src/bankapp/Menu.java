@@ -25,15 +25,12 @@ public class Menu {
 	
 		Menu mainMenu = new Menu();
 		mainMenu.getFiles();
+		mainMenu.createScanners();
 		mainMenu.loginOrCreateAccount();
 		mainMenu.runBankFeatures();
 	}
 	
 	public Menu() {
-		this.in = new Scanner(System.in);
-		this.usernameOutput = new Scanner("names.txt");
-		this.passwordOutput = new Scanner("passwords.txt");
-		this.balanceOutput = new Scanner("balances.txt");
 		this.account = new BankAccount();
 		this.exit = false;
 		this.loginComplete = false;
@@ -43,6 +40,28 @@ public class Menu {
 		namesFile = new File("names.txt");
 		passwordsFile = new File("passwords.txt");
 		balancesFile = new File("balances.txt");
+	}
+	
+	public void createScanners() {
+		in = new Scanner(System.in);
+		try {
+			usernameOutput = new Scanner(namesFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("usernameOutput scanner not created");
+			e.printStackTrace();
+		}
+		try {
+			passwordOutput = new Scanner(passwordsFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("passwordOutput scanner not created");
+			e.printStackTrace();
+		}
+		try {
+			balanceOutput = new Scanner(balancesFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("balanceOutput scanner not created");
+			e.printStackTrace();
+		}
 	}
 	
 	public void loginOrCreateAccount() {
@@ -240,28 +259,32 @@ public class Menu {
 			usernames.add(usernameOutput.nextLine());
 		}
 		while(passwordOutput.hasNextLine()) {
-			passwords.add(usernameOutput.nextLine());
+			passwords.add(passwordOutput.nextLine());
 		}
 		while(balanceOutput.hasNextDouble()) {
-			balances.add(usernameOutput.nextDouble());
+			balances.add(balanceOutput.nextDouble());
 		}
 		
+		askForLogin(usernames, passwords, balances);
+		
+	}
+
+	private void askForLogin(ArrayList<String> usernames, ArrayList<String> passwords, ArrayList<Double> balances) {
 		while (!loginComplete) {
+			in.nextLine();
 			System.out.println("Username: ");
 			String username = in.nextLine();
 			System.out.println("Password: ");
 			String password = in.nextLine();
-			
 			int index = usernames.indexOf(username);
 			double currentBalance = balances.get(index);
-			if (passwords.get(index) == password) {
+			if (passwords.get(index).equals(password)) {
 				account.setBalance(currentBalance);
 				loginComplete = true;
 			} else {
 				System.out.println("login unsuccessful");
 			}
 		}
-		
 	}
 	
 }
