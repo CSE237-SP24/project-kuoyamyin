@@ -70,4 +70,88 @@ class BankAccountTests {
 		//3. Use assertions to verify results
 		assertEquals(12.34, testAccount.getBalance(), 0.01);	
 	}
+	
+	@Test
+	void testSimpleWithdraw() {
+		//1. Setup Objects
+		
+		BankAccount testAccount = new BankAccount();
+		testAccount.deposit(50);
+		
+		//2. Call the method being tested
+		testAccount.withdraw(25);
+		
+		//3. Use assertions to verify results
+		assertEquals(25.0, testAccount.getBalance(), 0.01);	
+	}
+	
+	@Test
+	void testNegativeWithdraw() {
+		//1. Setup Objects	
+		BankAccount testAccount = new BankAccount();
+		testAccount.deposit(50);
+		
+		//2. Call the method being tested
+		try {
+			testAccount.withdraw(-5);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//we expect to end up here, -5 is a bad input
+			assertTrue(true);
+		}
+	}
+
+	@Test
+	void testZeroWithdraw() {
+		//1. Setup Objects	
+		BankAccount testAccount = new BankAccount();
+		testAccount.deposit(20);
+		
+		//2. Call the method being tested
+		testAccount.withdraw(0);
+		
+		//3. Use assertions to verify results
+		assertEquals(20.0, testAccount.getBalance(), 0.01);	
+	}
+	
+	@Test
+	void testMultipleWithdraw() {
+		BankAccount testAccount = new BankAccount();
+		testAccount.deposit(100);
+		
+		//2. Call the method being tested
+		testAccount.withdraw(25);
+		testAccount.withdraw(50);
+		
+		//3. Use assertions to verify results
+		assertEquals(25.0, testAccount.getBalance(), 0.01);	
+	}
+	
+	@Test
+	void testDecimalWithdraw() {
+		BankAccount testAccount = new BankAccount();
+		testAccount.deposit(20);
+		
+		//2. Call the method being tested
+		testAccount.withdraw(10.30);
+		
+		//3. Use assertions to verify results
+		assertEquals(9.70, testAccount.getBalance(), 0.01);	
+	}
+	
+	@Test
+	void testWithdrawMoreThanBalance() {
+		//1. Setup Objects	
+		BankAccount testAccount = new BankAccount();
+		testAccount.deposit(50);
+		
+		//2. Call the method being tested
+		try {
+			testAccount.withdraw(70);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//we expect to end up here
+			assertTrue(true);
+		}
+	}
 }
