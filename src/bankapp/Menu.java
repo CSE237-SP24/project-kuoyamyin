@@ -36,6 +36,7 @@ public class Menu {
 		this.account = new BankAccount();
 		this.exit = false;
 		this.loginComplete = false;
+		
 	}
 	
 	public void getFiles() {
@@ -231,9 +232,10 @@ public class Menu {
 		} else if (choice == 4) {
 			exit = true;
 			try {
-				PrintWriter exitWriter = new PrintWriter(new FileOutputStream(balancesFile, true));
-				exitWriter.print("");
-				exitWriter.close();
+				PrintWriter exitWriter = new PrintWriter(balancesFile);
+				//exitWriter.print("");
+				//exitWriter.close();
+				//exitWriter.flush();
 				for(int i = 0; i < balances.size(); i++) {
 					if(indexOfAccount == i) {
 						exitWriter.println(account.getBalance());
