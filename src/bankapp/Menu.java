@@ -20,6 +20,8 @@ public class Menu {
 	private File namesFile;
 	private File passwordsFile;
 	private File balancesFile;
+	private int indexOfAccount;
+	private ArrayList<Double> balances;
 
 	public static void main(String[] args) {
 	
@@ -37,9 +39,9 @@ public class Menu {
 	}
 	
 	public void getFiles() {
-		namesFile = new File("../names.txt");
-		passwordsFile = new File("../passwords.txt");
-		balancesFile = new File("../balances.txt");
+		namesFile = new File("names.txt");
+		passwordsFile = new File("passwords.txt");
+		balancesFile = new File("balances.txt");
 	}
 	
 	public void createScanners() {
@@ -228,9 +230,25 @@ public class Menu {
 			withdrawAction();
 		} else if (choice == 4) {
 			exit = true;
-			System.out.println("Account exited");
+			try {
+				PrintWriter exitWriter = new PrintWriter(new FileOutputStream(balancesFile, true));
+				exitWriter.print("");
+				exitWriter.close();
+				for(int i = 0; i < balances.size(); i++) {
+					if(indexOfAccount == i) {
+						exitWriter.println(account.getBalance());
+					} else {
+						exitWriter.println(balances.get(i));
+					}
+				}
+				exitWriter.close();
+				System.out.println("Account exited");
+			} catch (FileNotFoundException e){
+				System.out.println("balancesFile not found.");
+				e.printStackTrace();
+			}
 		}
-	}
+	} 
 
 	private void depositAction() {
 		System.out.println("How much would you like to deposit?");
@@ -254,7 +272,7 @@ public class Menu {
 	public void logInAction() {
 		ArrayList<String> usernames = new ArrayList<>();
 		ArrayList<String> passwords = new ArrayList<>();
-		ArrayList<Double> balances = new ArrayList<>();
+		balances = new ArrayList<>();
 		while(usernameOutput.hasNextLine()) {
 			usernames.add(usernameOutput.nextLine());
 		}
@@ -276,9 +294,9 @@ public class Menu {
 			String username = in.nextLine();
 			System.out.println("Password: ");
 			String password = in.nextLine();
-			int index = usernames.indexOf(username);
-			double currentBalance = balances.get(index);
-			if (passwords.get(index).equals(password)) {
+			indexOfAccount = usernames.indexOf(username);
+			double currentBalance = balances.get(indexOfAccount);
+			if (passwords.get(indexOfAccount).equals(password)) {
 				account.setBalance(currentBalance);
 				loginComplete = true;
 			} else {
@@ -286,5 +304,7 @@ public class Menu {
 			}
 		}
 	}
+	
+	
 	
 }
