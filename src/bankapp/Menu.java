@@ -231,21 +231,25 @@ public class Menu {
 			withdrawAction();
 		} else if (choice == 4) {
 			exit = true;
-			try {
-				PrintWriter exitWriter = new PrintWriter(balancesFile);
-				for(int i = 0; i < balances.size(); i++) {
-					if(indexOfAccount == i) {
-						exitWriter.println(account.getBalance());
-					} else {
-						exitWriter.println(balances.get(i));
-					}
+			updateBalancesFile();
+		}
+	}
+
+	private void updateBalancesFile() {
+		try {
+			PrintWriter exitWriter = new PrintWriter(balancesFile);
+			for(int i = 0; i < balances.size(); i++) {
+				if(indexOfAccount == i) {
+					exitWriter.println(account.getBalance());
+				} else {
+					exitWriter.println(balances.get(i));
 				}
-				exitWriter.close();
-				System.out.println("Account exited");
-			} catch (FileNotFoundException e){
-				System.out.println("balancesFile not found.");
-				e.printStackTrace();
 			}
+			exitWriter.close();
+			System.out.println("Account exited");
+		} catch (FileNotFoundException e){
+			System.out.println("balancesFile not found.");
+			e.printStackTrace();
 		}
 	} 
 
