@@ -6,33 +6,65 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Menu {
 	
 	private Scanner in;
+	private Scanner usernameOutput;
+	private Scanner passwordOutput;
+	private Scanner balanceOutput;
 	private BankAccount account;
 	private boolean exit;
+	private boolean loginComplete;
 	private File namesFile;
 	private File passwordsFile;
 	private File balancesFile;
+	private int indexOfAccount;
+	private ArrayList<Double> balances;
 
 	public static void main(String[] args) {
+	
 		Menu mainMenu = new Menu();
 		mainMenu.getFiles();
+		mainMenu.createScanners();
 		mainMenu.loginOrCreateAccount();
 		mainMenu.runBankFeatures();
 	}
 	
 	public Menu() {
-		this.in = new Scanner(System.in);
 		this.account = new BankAccount();
 		this.exit = false;
+		this.loginComplete = false;
+		
 	}
 	
 	public void getFiles() {
-		namesFile = new File("names.txt");
-		passwordsFile = new File("passwords.txt");
-		balancesFile = new File("balances.txt");
+		namesFile = new File("../names.txt");
+		passwordsFile = new File("../passwords.txt");
+		balancesFile = new File("../balances.txt");
+	}
+	
+	public void createScanners() {
+		in = new Scanner(System.in);
+		try {
+			usernameOutput = new Scanner(namesFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("usernameOutput scanner not created");
+			e.printStackTrace();
+		}
+		try {
+			passwordOutput = new Scanner(passwordsFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("passwordOutput scanner not created");
+			e.printStackTrace();
+		}
+		try {
+			balanceOutput = new Scanner(balancesFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("balanceOutput scanner not created");
+			e.printStackTrace();
+		}
 	}
 	
 	public void loginOrCreateAccount() {
@@ -53,7 +85,7 @@ public class Menu {
 	
 	public void processingUserLoginSelection(int choice) {
 		if (choice == 1) {
-			// method for login
+			logInAction();
 		} else if (choice == 2) {
 			createAccountAction();
 		} else if (choice == 3) {
@@ -199,9 +231,23 @@ public class Menu {
 			withdrawAction();
 		} else if (choice == 4) {
 			exit = true;
-			System.out.println("Account exited");
+			try {
+				PrintWriter exitWriter = new PrintWriter(balancesFile);
+				for(int i = 0; i < balances.size(); i++) {
+					if(indexOfAccount == i) {
+						exitWriter.println(account.getBalance());
+					} else {
+						exitWriter.println(balances.get(i));
+					}
+				}
+				exitWriter.close();
+				System.out.println("Account exited");
+			} catch (FileNotFoundException e){
+				System.out.println("balancesFile not found.");
+				e.printStackTrace();
+			}
 		}
-	}
+	} 
 
 	private void depositAction() {
 		System.out.println("How much would you like to deposit?");
@@ -221,4 +267,43 @@ public class Menu {
 	public BankAccount getAccount() {
 		return account;
 	}
+	
+	public void logInAction() {
+		ArrayList<String> usernames = new ArrayList<>();
+		ArrayList<String> passwords = new ArrayList<>();
+		balances = new ArrayList<>();
+		while(usernameOutput.hasNextLine()) {
+			usernames.add(usernameOutput.nextLine());
+		}
+		while(passwordOutput.hasNextLine()) {
+			passwords.add(passwordOutput.nextLine());
+		}
+		while(balanceOutput.hasNextDouble()) {
+			balances.add(balanceOutput.nextDouble());
+		}
+		
+		askForLogin(usernames, passwords, balances);
+		
+	}
+
+	private void askForLogin(ArrayList<String> usernames, ArrayList<String> passwords, ArrayList<Double> balances) {
+		while (!loginComplete) {
+			in.nextLine();
+			System.out.println("Username: ");
+			String username = in.nextLine();
+			System.out.println("Password: ");
+			String password = in.nextLine();
+			indexOfAccount = usernames.indexOf(username);
+			double currentBalance = balances.get(indexOfAccount);
+			if (passwords.get(indexOfAccount).equals(password)) {
+				account.setBalance(currentBalance);
+				loginComplete = true;
+			} else {
+				System.out.println("login unsuccessful");
+			}
+		}
+	}
+	
+	
+	
 }

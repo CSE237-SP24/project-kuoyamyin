@@ -1,11 +1,11 @@
-
 #!/bin/bash
 
 cd src
 
-javac bankapp/*.java
+javac bankapp/BankAccount.java
+javac bankapp/Menu.java
 
-java bankapp.Menu
+java bankapp/Menu
 
 cd bankapp
 
