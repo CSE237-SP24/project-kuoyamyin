@@ -40,9 +40,9 @@ public class Menu {
 	}
 	
 	public void getFiles() {
-		namesFile = new File("names.txt");
-		passwordsFile = new File("passwords.txt");
-		balancesFile = new File("balances.txt");
+		namesFile = new File("../names.txt");
+		passwordsFile = new File("../passwords.txt");
+		balancesFile = new File("../balances.txt");
 	}
 	
 	public void createScanners() {
@@ -233,9 +233,6 @@ public class Menu {
 			exit = true;
 			try {
 				PrintWriter exitWriter = new PrintWriter(balancesFile);
-				//exitWriter.print("");
-				//exitWriter.close();
-				//exitWriter.flush();
 				for(int i = 0; i < balances.size(); i++) {
 					if(indexOfAccount == i) {
 						exitWriter.println(account.getBalance());
