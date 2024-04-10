@@ -10,3 +10,8 @@ Scott: create bank account object and check balance method
 Emma: file setup and access
 Eric: logIn method
 Scott: create account method
+
+# Iteration 3
+Emma: change username method
+Eric: delete account method
+Scott: change password method
