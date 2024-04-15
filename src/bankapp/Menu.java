@@ -95,15 +95,27 @@ public class Menu {
 	}
 	
 	private void createAccountAction() {
+		String[] accountInfo = getNewAccountInfo();
+		addNewName(accountInfo[0]);
+		addNewPassword(accountInfo[1]);
+		addNewBalance();
+		balances = new ArrayList<>();
+		while(balanceOutput.hasNextDouble()) {
+			balances.add(balanceOutput.nextDouble());
+		}
+		indexOfAccount = balances.size()-1;
+		
+		
+	}
+
+	private String[] getNewAccountInfo() {
 		in.nextLine();
 		System.out.println("What is your name?");
 		String name = in.nextLine();
 		System.out.println("What will your password be?");
 		String password = in.nextLine();
-		addNewName(name);
-		addNewPassword(password);
-		addNewBalance();
-		
+		String[] accountInfo = {name, password};
+		return accountInfo;
 	}
 
 	private void addNewBalance() {
@@ -251,7 +263,7 @@ public class Menu {
 			System.out.println("balancesFile not found.");
 			e.printStackTrace();
 		}
-	} 
+	}
 
 	private void depositAction() {
 		System.out.println("How much would you like to deposit?");
