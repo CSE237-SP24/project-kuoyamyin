@@ -24,7 +24,6 @@ public class Menu {
 	private ArrayList<Double> balances;
 
 	public static void main(String[] args) {
-	
 		Menu mainMenu = new Menu();
 		mainMenu.getFiles();
 		mainMenu.createScanners();
@@ -303,20 +302,25 @@ public class Menu {
 	}
 
 	private void askForLogin(ArrayList<String> usernames, ArrayList<String> passwords, ArrayList<Double> balances) {
+		in.nextLine();
 		while (!loginComplete) {
-			in.nextLine();
 			System.out.println("Username: ");
 			String username = in.nextLine();
 			System.out.println("Password: ");
 			String password = in.nextLine();
 			indexOfAccount = usernames.indexOf(username);
-			double currentBalance = balances.get(indexOfAccount);
-			if (passwords.get(indexOfAccount).equals(password)) {
-				account.setBalance(currentBalance);
-				loginComplete = true;
+			if (indexOfAccount == -1) {
+				System.out.println("Incorrect username and/or password");
 			} else {
-				System.out.println("login unsuccessful");
+				double currentBalance = balances.get(indexOfAccount);
+				if (passwords.get(indexOfAccount).equals(password)) {
+					account.setBalance(currentBalance);
+					loginComplete = true;
+				} else {
+					System.out.println("login unsuccessful");
+				}
 			}
+			
 		}
 	}
 	
