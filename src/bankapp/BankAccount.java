@@ -31,6 +31,13 @@ public class BankAccount {
 	public double getBalance() {
 		return this.balance;
 	}
+	
+	public void setBalance(double newBalance) {
+		this.balance = newBalance;
+		
+	}
+	
+	
 
 
 
