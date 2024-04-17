@@ -156,7 +156,7 @@ public class Menu {
 	public void runBankFeatures() {
 		while(!exit) {
 			int minChoice = 1;
-			int maxChoice = 4;
+			int maxChoice = 5;
 			this.displayingOptions();
 			int choice = this.getValidUserInput(minChoice, maxChoice);
 			this.processingUserActionSelection(choice);
