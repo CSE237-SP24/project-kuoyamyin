@@ -1,6 +1,7 @@
 package bankapp;
 
 import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -158,7 +159,7 @@ public class Menu {
 	public void runBankFeatures() {
 		while(!exit) {
 			int minChoice = 1;
-			int maxChoice = 5;
+			int maxChoice = 6;
 			this.displayingOptions();
 			int choice = this.getValidUserInput(minChoice, maxChoice);
 			this.processingUserActionSelection(choice);
@@ -170,8 +171,9 @@ public class Menu {
 		System.out.println("1. Check balance");
 		System.out.println("2. Deposit money");
 		System.out.println("3. Withdraw money");
-		System.out.println("4. Exit");
-		System.out.println("5. Delete account");
+		System.out.println("4. Delete account");
+		System.out.println("5. Manage Account (change username/password)");
+		System.out.println("6. Exit");
 		System.out.println("Select an action (enter number):");
 	}
 	
@@ -247,6 +249,8 @@ public class Menu {
 		} else if (choice == 3) {
 			withdrawAction();
 		} else if (choice == 4) {
+			manageAccount();
+		} else if (choice == 5) {
 			exit = true;
 			updateBalancesFile();
 		} else if (choice == 5) {
@@ -296,9 +300,6 @@ public class Menu {
 	}
 	
 	public void logInAction() {
-		usernames = new ArrayList<>();
-		passwords = new ArrayList<>();
-		balances = new ArrayList<>();
 		while(usernameOutput.hasNextLine()) {
 			usernames.add(usernameOutput.nextLine());
 		}
@@ -309,8 +310,85 @@ public class Menu {
 			balances.add(balanceOutput.nextDouble());
 		}
 		
-		askForLogin(/*usernames, passwords, balances*/);
-		
+		askForLogin();
+			
+	}
+	
+	private void manageAccount() {
+		System.out.println("Enter 1 to change your username, 2 to change your password, or 3 to return to other options");
+		int userChoice = in.nextInt();
+		while (userChoice!= 1 && userChoice != 2 && userChoice!=3) {
+			System.out.println("Must enter either 1, 2, or 3");
+		}
+		if (userChoice == 1) {
+			changeUsername();
+		}
+		else if(userChoice == 2) {
+			changePassword();
+		}
+		else if (userChoice == 3) {
+			displayingOptions();
+		}
+	}
+	
+	private void changeUsername() {
+		System.out.println("What would you like your new username to be?");
+		in.nextLine();
+		String newUsername = in.nextLine();
+		updateUsernameFile(newUsername, indexOfAccount);
+	}
+	
+	private void changePassword() {
+		System.out.println("Verify your current password");
+		in.nextLine();
+		String tempPassword = in.nextLine();
+		int passwordIndex = passwords.indexOf(tempPassword);
+		while (passwordIndex != indexOfAccount) {
+			System.out.println("Password is incorrect, try again.");
+			tempPassword = in.nextLine();
+			passwordIndex = passwords.indexOf(tempPassword);
+		}
+		System.out.println("What would you like your new password to be?");
+		String newPassword = in.nextLine();
+		updatePasswordFile(newPassword, indexOfAccount);
+	}
+	
+	private void updateUsernameFile(String newUsername, int accountIndex) {
+		try {
+			PrintWriter exitWriter = new PrintWriter(namesFile);
+			for(int i = 0; i < usernames.size(); i++) {
+				if(accountIndex == i) {
+					exitWriter.println(newUsername);
+				}
+				else {
+					exitWriter.println(usernames.get(i));
+				}
+			}
+			exitWriter.close();
+			System.out.println("Username Changed");
+		} catch (FileNotFoundException e){
+			System.out.println("Username not updated");
+			e.printStackTrace();
+		}
+	}
+	
+	private void updatePasswordFile(String newPassword, int accountIndex) {
+		try {
+			PrintWriter exitWriter = new PrintWriter(passwordsFile);
+			for(int i = 0; i < usernames.size(); i++) {
+				if(accountIndex == i) {
+					exitWriter.println(newPassword);
+				} 
+				else {
+					exitWriter.println(passwords.get(i));
+				}
+			}
+			exitWriter.close();
+			System.out.println("Password Changed");
+		} catch (FileNotFoundException e){
+			System.out.println("Password not updated");
+			e.printStackTrace();
+		}
 	}
 
 	private void askForLogin(/*ArrayList<String> usernames, ArrayList<String> passwords, ArrayList<Double> balances*/) {
@@ -321,6 +399,8 @@ public class Menu {
 			System.out.println("Password: ");
 			String password = in.nextLine();
 			indexOfAccount = usernames.indexOf(username);
+			System.out.println(usernames);
+			System.out.println(passwords);
 			if (indexOfAccount == -1) {
 				System.out.println("Incorrect username and/or password");
 			} else {
