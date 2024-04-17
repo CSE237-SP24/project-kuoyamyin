@@ -248,12 +248,12 @@ public class Menu {
 			depositAction();
 		} else if (choice == 3) {
 			withdrawAction();
-		} else if (choice == 4) {
-			manageAccount();
 		} else if (choice == 5) {
+			manageAccount();
+		} else if (choice == 6) {
 			exit = true;
 			updateBalancesFile();
-		} else if (choice == 5) {
+		} else if (choice == 4) {
 			//delete action
 			deleteAction();
 			//want to exit out of account home screen
