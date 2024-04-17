@@ -23,8 +23,8 @@ public class Menu {
 	private File balancesFile;
 	private int indexOfAccount;
 	private ArrayList<Double> balances;
-	private ArrayList<String> usernames = new ArrayList<>();
-	private ArrayList<String> passwords = new ArrayList<>();
+	private ArrayList<String> usernames;
+	private ArrayList<String> passwords;
 
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
@@ -38,6 +38,9 @@ public class Menu {
 		this.account = new BankAccount();
 		this.exit = false;
 		this.loginComplete = false;
+		this.balances = new ArrayList<>();
+		this.usernames = new ArrayList<>();
+		this.passwords = new ArrayList<>();
 		
 	}
 	
@@ -156,7 +159,7 @@ public class Menu {
 	public void runBankFeatures() {
 		while(!exit) {
 			int minChoice = 1;
-			int maxChoice = 5;
+			int maxChoice = 6;
 			this.displayingOptions();
 			int choice = this.getValidUserInput(minChoice, maxChoice);
 			this.processingUserActionSelection(choice);
@@ -168,8 +171,9 @@ public class Menu {
 		System.out.println("1. Check balance");
 		System.out.println("2. Deposit money");
 		System.out.println("3. Withdraw money");
-		System.out.println("4. Manage Account (change username/password)");
-		System.out.println("5. Exit");
+		System.out.println("4. Delete account");
+		System.out.println("5. Manage Account (change username/password)");
+		System.out.println("6. Exit");
 		System.out.println("Select an action (enter number):");
 	}
 	
@@ -244,11 +248,17 @@ public class Menu {
 			depositAction();
 		} else if (choice == 3) {
 			withdrawAction();
-		} else if (choice == 4) {
-			manageAccount();
 		} else if (choice == 5) {
+			manageAccount();
+		} else if (choice == 6) {
 			exit = true;
 			updateBalancesFile();
+		} else if (choice == 4) {
+			//delete action
+			deleteAction();
+			//want to exit out of account home screen
+			exit = true;
+			System.out.println("Account deleted");
 		}
 	}
 
@@ -290,7 +300,6 @@ public class Menu {
 	}
 	
 	public void logInAction() {
-		balances = new ArrayList<>();
 		while(usernameOutput.hasNextLine()) {
 			usernames.add(usernameOutput.nextLine());
 		}
@@ -301,7 +310,7 @@ public class Menu {
 			balances.add(balanceOutput.nextDouble());
 		}
 		
-		askForLogin(usernames, passwords, balances);
+		askForLogin();
 			
 	}
 	
@@ -382,7 +391,7 @@ public class Menu {
 		}
 	}
 
-	private void askForLogin(ArrayList<String> usernames, ArrayList<String> passwords, ArrayList<Double> balances) {
+	private void askForLogin(/*ArrayList<String> usernames, ArrayList<String> passwords, ArrayList<Double> balances*/) {
 		in.nextLine();
 		while (!loginComplete) {
 			System.out.println("Username: ");
@@ -407,6 +416,67 @@ public class Menu {
 		}
 	}
 	
+	public void deleteAction() {
+		String pass = "";
+		//want to check if password is correct, if not then reprompt. If it is correct then call deleteAccount()
+		while(!pass.equals(passwords.get(indexOfAccount))) {
+			System.out.println("Confirm your password: ");
+			Scanner in = new Scanner(System.in);
+			pass = in.nextLine();
+		}
+			deleteAccount(pass);
+	}
+	
+	//get the index of the account(username, password, balance)
+		//create new printWriter, rewrite every username,password, balance EXCEPT deleted account
+	//UPDATE 4/16: deletes correct username and pass, but does not delete balance for some reason
+		public void deleteAccount(String password) {
+			indexOfAccount = passwords.indexOf(password);
+			
+			try {
+				PrintWriter usernameWriter = new PrintWriter(namesFile);
+				for(int i = 0; i < usernames.size(); i++) {
+					if(indexOfAccount == i) {
+						continue;
+					} else {
+						usernameWriter.println(usernames.get(i));
+					}
+				}
+				usernameWriter.close();
+			} catch (FileNotFoundException e1) {
+				System.out.println("File not found");
+			}
+			
+			try {
+				PrintWriter passwordsWriter = new PrintWriter(passwordsFile);
+				for(int i = 0; i < usernames.size(); i++) {
+					if(indexOfAccount == i) {
+						continue;
+					} else {
+						passwordsWriter.println(passwords.get(i));
+					}
+				}
+				passwordsWriter.close();
+			} catch (FileNotFoundException e1) {
+				System.out.println("File not found");
+			}
+			
+			try {
+				PrintWriter balanceWriter = new PrintWriter(balancesFile);
+				for(int i = 0; i < balances.size(); i++) {
+					if(indexOfAccount == i) {
+						continue;
+					} else {
+						balanceWriter.println(balances.get(i));
+					}
+				}
+				
+				balanceWriter.close();
+			} catch (FileNotFoundException e) {
+				System.out.println("File not found");
+			}
+		
+		}
 	
 	
 }
