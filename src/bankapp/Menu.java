@@ -45,9 +45,9 @@ public class Menu {
 	}
 	
 	public void getFiles() {
-		namesFile = new File("../names.txt");
-		passwordsFile = new File("../passwords.txt");
-		balancesFile = new File("../balances.txt");
+		namesFile = new File("names.txt");
+		passwordsFile = new File("passwords.txt");
+		balancesFile = new File("balances.txt");
 	}
 	
 	public void createScanners() {
@@ -109,6 +109,7 @@ public class Menu {
 			balances.add(balanceOutput.nextDouble());
 		}
 		indexOfAccount = balances.size()-1;
+		logInAction();
 		
 		
 	}
@@ -185,14 +186,15 @@ public class Menu {
 				choice = in.nextInt();
 				if (choice < min || choice > max) {
 					System.out.println("Invalid choice");
-					displayingOptions();
+					in.nextLine();
+					return getValidUserInput(min, max);
 				} else {
 					invalidChoice = false;
 				}
 			} catch (InputMismatchException e) {
 				System.out.println("Must enter an integer");
-				displayingOptions();
 				in.nextLine();
+				return getValidUserInput(min, max);
 			}
 		}
 		System.out.println("");
@@ -356,13 +358,9 @@ public class Menu {
 	private void updateUsernameFile(String newUsername, int accountIndex) {
 		try {
 			PrintWriter exitWriter = new PrintWriter(namesFile);
+			usernames.set(accountIndex, newUsername);
 			for(int i = 0; i < usernames.size(); i++) {
-				if(accountIndex == i) {
-					exitWriter.println(newUsername);
-				}
-				else {
-					exitWriter.println(usernames.get(i));
-				}
+				exitWriter.println(usernames.get(i));
 			}
 			exitWriter.close();
 			System.out.println("Username Changed");
@@ -373,15 +371,11 @@ public class Menu {
 	}
 	
 	private void updatePasswordFile(String newPassword, int accountIndex) {
+		passwords.set(accountIndex, newPassword);
 		try {
 			PrintWriter exitWriter = new PrintWriter(passwordsFile);
 			for(int i = 0; i < usernames.size(); i++) {
-				if(accountIndex == i) {
-					exitWriter.println(newPassword);
-				} 
-				else {
-					exitWriter.println(passwords.get(i));
-				}
+				exitWriter.println(passwords.get(i));
 			}
 			exitWriter.close();
 			System.out.println("Password Changed");
