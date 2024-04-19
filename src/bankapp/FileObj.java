@@ -15,6 +15,7 @@ public class FileObj {
 
 	public FileObj(String fileName) {
 		file = new File(fileName);
+		fileContent = new ArrayList<String>();
 		try {
 			this.fileOutput = new Scanner(file);
 		} catch (FileNotFoundException e) {

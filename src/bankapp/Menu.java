@@ -1,10 +1,9 @@
 package bankapp;
 
-import java.io.File;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+//import java.io.File;
+//import java.io.FileNotFoundException;
+//import java.io.FileOutputStream;
+//import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -12,30 +11,30 @@ import java.util.ArrayList;
 public class Menu {
 	
 	private Scanner in;
-	private Scanner usernameOutput;
-	private Scanner passwordOutput;
-	private Scanner balanceOutput;
+//	private Scanner usernameOutput;
+//	private Scanner passwordOutput;
+//	private Scanner balanceOutput;
 	private BankAccount account;
 	private boolean exit;
 	private boolean loginComplete;
-	private File namesFile;
-	private File passwordsFile;
-	private File balancesFile;
+	private FileObj namesFile;
+	private FileObj passwordsFile;
+	private FileObj balancesFile;
 	private int indexOfAccount;
-	private ArrayList<Double> balances;
+	private ArrayList<String> balances;
 	private ArrayList<String> usernames;
 	private ArrayList<String> passwords;
 
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
 		mainMenu.getFiles();
-		mainMenu.createScanners();
 		mainMenu.loginOrCreateAccount();
 		mainMenu.runBankFeatures();
 	}
 	
 	public Menu() {
 		this.account = new BankAccount();
+		this.in = new Scanner(System.in);
 		this.exit = false;
 		this.loginComplete = false;
 		this.balances = new ArrayList<>();
@@ -45,31 +44,13 @@ public class Menu {
 	}
 	
 	public void getFiles() {
-		namesFile = new File("names.txt");
-		passwordsFile = new File("passwords.txt");
-		balancesFile = new File("balances.txt");
-	}
-	
-	public void createScanners() {
-		in = new Scanner(System.in);
-		try {
-			usernameOutput = new Scanner(namesFile);
-		} catch (FileNotFoundException e) {
-			System.out.println("usernameOutput scanner not created");
-			e.printStackTrace();
-		}
-		try {
-			passwordOutput = new Scanner(passwordsFile);
-		} catch (FileNotFoundException e) {
-			System.out.println("passwordOutput scanner not created");
-			e.printStackTrace();
-		}
-		try {
-			balanceOutput = new Scanner(balancesFile);
-		} catch (FileNotFoundException e) {
-			System.out.println("balanceOutput scanner not created");
-			e.printStackTrace();
-		}
+		namesFile = new FileObj("names.txt");
+		passwordsFile = new FileObj("passwords.txt");
+		balancesFile = new FileObj("balances.txt");
+		
+		usernames = namesFile.getContent();
+		passwords = passwordsFile.getContent();
+		balances = balancesFile.getContent();
 	}
 	
 	public void loginOrCreateAccount() {
@@ -90,7 +71,7 @@ public class Menu {
 	
 	public void processingUserLoginSelection(int choice) {
 		if (choice == 1) {
-			logInAction();
+			askForLogin();
 		} else if (choice == 2) {
 			createAccountAction();
 		} else if (choice == 3) {
@@ -104,14 +85,7 @@ public class Menu {
 		addNewName(accountInfo[0]);
 		addNewPassword(accountInfo[1]);
 		addNewBalance();
-		balances = new ArrayList<>();
-		while(balanceOutput.hasNextDouble()) {
-			balances.add(balanceOutput.nextDouble());
-		}
 		indexOfAccount = balances.size()-1;
-		logInAction();
-		
-		
 	}
 
 	private String[] getNewAccountInfo() {
@@ -125,36 +99,18 @@ public class Menu {
 	}
 
 	private void addNewBalance() {
-		try {
-			PrintWriter balancesWriter = new PrintWriter(new FileOutputStream(balancesFile, true));
-			balancesWriter.println(0);
-			balancesWriter.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("balancesFile not found.");
-			e.printStackTrace();
-		}
+		balances.add("0");
+		balancesFile.setContent(balances);
 	}
 
 	private void addNewPassword(String password) {
-		try {
-			PrintWriter passwordsWriter = new PrintWriter(new FileOutputStream(passwordsFile, true));
-			passwordsWriter.println(password);
-			passwordsWriter.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("passwordsFile not found.");
-			e.printStackTrace();
-		}
+		passwords.add(password);
+		passwordsFile.setContent(passwords);
 	}
 
 	private void addNewName(String name) {
-		try {
-			PrintWriter namesWriter = new PrintWriter(new FileOutputStream(namesFile, true));
-			namesWriter.println(name);
-			namesWriter.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("namesFile not found.");
-			e.printStackTrace();
-		}
+		usernames.add(name);
+		namesFile.setContent(usernames);
 	}
 	
 	public void runBankFeatures() {
@@ -250,36 +206,21 @@ public class Menu {
 			depositAction();
 		} else if (choice == 3) {
 			withdrawAction();
+		} else if (choice == 4) {
+			deleteAction();
+			exit = true;
+			System.out.println("Account deleted");
 		} else if (choice == 5) {
 			manageAccount();
 		} else if (choice == 6) {
 			exit = true;
 			updateBalancesFile();
-		} else if (choice == 4) {
-			//delete action
-			deleteAction();
-			//want to exit out of account home screen
-			exit = true;
-			System.out.println("Account deleted");
 		}
 	}
 
 	private void updateBalancesFile() {
-		try {
-			PrintWriter exitWriter = new PrintWriter(balancesFile);
-			for(int i = 0; i < balances.size(); i++) {
-				if(indexOfAccount == i) {
-					exitWriter.println(account.getBalance());
-				} else {
-					exitWriter.println(balances.get(i));
-				}
-			}
-			exitWriter.close();
-			System.out.println("Account exited");
-		} catch (FileNotFoundException e){
-			System.out.println("balancesFile not found.");
-			e.printStackTrace();
-		}
+		balances.set(indexOfAccount, Double.toString(account.getBalance()));
+		balancesFile.setContent(balances);
 	}
 
 	private void depositAction() {
@@ -301,20 +242,6 @@ public class Menu {
 		return account;
 	}
 	
-	public void logInAction() {
-		while(usernameOutput.hasNextLine()) {
-			usernames.add(usernameOutput.nextLine());
-		}
-		while(passwordOutput.hasNextLine()) {
-			passwords.add(passwordOutput.nextLine());
-		}
-		while(balanceOutput.hasNextDouble()) {
-			balances.add(balanceOutput.nextDouble());
-		}
-		
-		askForLogin();
-			
-	}
 	
 	private void manageAccount() {
 		System.out.println("Enter 1 to change your username, 2 to change your password, or 3 to return to other options");
@@ -337,7 +264,8 @@ public class Menu {
 		System.out.println("What would you like your new username to be?");
 		in.nextLine();
 		String newUsername = in.nextLine();
-		updateUsernameFile(newUsername, indexOfAccount);
+		usernames.set(indexOfAccount, newUsername);
+		namesFile.setContent(usernames);
 	}
 	
 	private void changePassword() {
@@ -352,40 +280,11 @@ public class Menu {
 		}
 		System.out.println("What would you like your new password to be?");
 		String newPassword = in.nextLine();
-		updatePasswordFile(newPassword, indexOfAccount);
-	}
-	
-	private void updateUsernameFile(String newUsername, int accountIndex) {
-		try {
-			PrintWriter exitWriter = new PrintWriter(namesFile);
-			usernames.set(accountIndex, newUsername);
-			for(int i = 0; i < usernames.size(); i++) {
-				exitWriter.println(usernames.get(i));
-			}
-			exitWriter.close();
-			System.out.println("Username Changed");
-		} catch (FileNotFoundException e){
-			System.out.println("Username not updated");
-			e.printStackTrace();
-		}
-	}
-	
-	private void updatePasswordFile(String newPassword, int accountIndex) {
-		passwords.set(accountIndex, newPassword);
-		try {
-			PrintWriter exitWriter = new PrintWriter(passwordsFile);
-			for(int i = 0; i < usernames.size(); i++) {
-				exitWriter.println(passwords.get(i));
-			}
-			exitWriter.close();
-			System.out.println("Password Changed");
-		} catch (FileNotFoundException e){
-			System.out.println("Password not updated");
-			e.printStackTrace();
-		}
+		passwords.set(indexOfAccount, newPassword);
+		passwordsFile.setContent(passwords);
 	}
 
-	private void askForLogin(/*ArrayList<String> usernames, ArrayList<String> passwords, ArrayList<Double> balances*/) {
+	private void askForLogin() {
 		in.nextLine();
 		while (!loginComplete) {
 			System.out.println("Username: ");
@@ -398,15 +297,14 @@ public class Menu {
 			if (indexOfAccount == -1) {
 				System.out.println("Incorrect username and/or password");
 			} else {
-				double currentBalance = balances.get(indexOfAccount);
 				if (passwords.get(indexOfAccount).equals(password)) {
+					double currentBalance = Double.parseDouble(balances.get(indexOfAccount));
 					account.setBalance(currentBalance);
 					loginComplete = true;
 				} else {
-					System.out.println("login unsuccessful");
+					System.out.println("Incorrect username and/or password");
 				}
 			}
-			
 		}
 	}
 	
@@ -415,7 +313,6 @@ public class Menu {
 		//want to check if password is correct, if not then reprompt. If it is correct then call deleteAccount()
 		while(!pass.equals(passwords.get(indexOfAccount))) {
 			System.out.println("Confirm your password: ");
-			Scanner in = new Scanner(System.in);
 			pass = in.nextLine();
 		}
 			deleteAccount(pass);
@@ -425,51 +322,13 @@ public class Menu {
 		//create new printWriter, rewrite every username,password, balance EXCEPT deleted account
 	//UPDATE 4/16: deletes correct username and pass, but does not delete balance for some reason
 		public void deleteAccount(String password) {
-			indexOfAccount = passwords.indexOf(password);
+			passwords.remove(indexOfAccount);
+			usernames.remove(indexOfAccount);
+			balances.remove(indexOfAccount);
 			
-			try {
-				PrintWriter usernameWriter = new PrintWriter(namesFile);
-				for(int i = 0; i < usernames.size(); i++) {
-					if(indexOfAccount == i) {
-						continue;
-					} else {
-						usernameWriter.println(usernames.get(i));
-					}
-				}
-				usernameWriter.close();
-			} catch (FileNotFoundException e1) {
-				System.out.println("File not found");
-			}
-			
-			try {
-				PrintWriter passwordsWriter = new PrintWriter(passwordsFile);
-				for(int i = 0; i < usernames.size(); i++) {
-					if(indexOfAccount == i) {
-						continue;
-					} else {
-						passwordsWriter.println(passwords.get(i));
-					}
-				}
-				passwordsWriter.close();
-			} catch (FileNotFoundException e1) {
-				System.out.println("File not found");
-			}
-			
-			try {
-				PrintWriter balanceWriter = new PrintWriter(balancesFile);
-				for(int i = 0; i < balances.size(); i++) {
-					if(indexOfAccount == i) {
-						continue;
-					} else {
-						balanceWriter.println(balances.get(i));
-					}
-				}
-				
-				balanceWriter.close();
-			} catch (FileNotFoundException e) {
-				System.out.println("File not found");
-			}
-		
+			passwordsFile.setContent(passwords);
+			namesFile.setContent(usernames);
+			balancesFile.setContent(balances);
 		}
 	
 	
