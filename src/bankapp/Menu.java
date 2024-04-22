@@ -49,17 +49,13 @@ public class Menu {
 	public void loginOrCreateAccount() {
 		int minChoice = 1;
 		int maxChoice = 3;
-		this.loginOrCreateAccountDisplay();
-		int choice = this.getValidUserInput(minChoice, maxChoice);
-		this.processingUserLoginSelection(choice);
-	}
-	
-	public void loginOrCreateAccountDisplay() {
 		System.out.println("");
 		System.out.println("1. Login");
 		System.out.println("2. Create Account");
 		System.out.println("3. Exit");
 		System.out.println("Select an action (enter number):");
+		int choice = this.getValidUserInput(minChoice, maxChoice);
+		this.processingUserLoginSelection(choice);
 	}
 	
 	public void processingUserLoginSelection(int choice) {
@@ -91,17 +87,17 @@ public class Menu {
 		return accountInfo;
 	}
 
-	private void addNewBalance() {
+	private void addNewBalance() { //testable
 		balances.add("0");
 		balancesFile.setContent(balances);
 	}
 
-	private void addNewPassword(String password) {
+	private void addNewPassword(String password) { //testable
 		passwords.add(password);
 		passwordsFile.setContent(passwords);
 	}
 
-	private void addNewName(String name) {
+	private void addNewName(String name) { //testable
 		usernames.add(name);
 		namesFile.setContent(usernames);
 	}
@@ -200,7 +196,8 @@ public class Menu {
 		} else if (choice == 3) {
 			withdrawAction();
 		} else if (choice == 4) {
-			deleteAction();
+			verifyPassword();
+			deleteAccount();
 			exit = true;
 			System.out.println("Account deleted");
 		} else if (choice == 5) {
@@ -211,7 +208,7 @@ public class Menu {
 		}
 	}
 
-	private void updateBalancesFile() {
+	private void updateBalancesFile() { //testable
 		balances.set(indexOfAccount, Double.toString(account.getBalance()));
 		balancesFile.setContent(balances);
 	}
@@ -243,7 +240,10 @@ public class Menu {
 			System.out.println("Must enter either 1, 2, or 3");
 		}
 		if (userChoice == 1) {
-			changeUsername();
+			System.out.println("What would you like your new username to be?");
+			in.nextLine();
+			String newUsername = in.nextLine();
+			changeUsername(newUsername);
 		}
 		else if(userChoice == 2) {
 			changePassword();
@@ -252,25 +252,17 @@ public class Menu {
 			displayingOptions();
 		}
 	}
-	
-	private void changeUsername() {
-		System.out.println("What would you like your new username to be?");
-		in.nextLine();
-		String newUsername = in.nextLine();
+
+	private void changeUsername(String newUsername) { //testable
+//		System.out.println("What would you like your new username to be?");
+//		in.nextLine();
+//		String newUsername = in.nextLine();
 		usernames.set(indexOfAccount, newUsername);
 		namesFile.setContent(usernames);
 	}
-	
+
 	private void changePassword() {
-		System.out.println("Verify your current password");
-		in.nextLine();
-		String tempPassword = in.nextLine();
-		int passwordIndex = passwords.indexOf(tempPassword);
-		while (passwordIndex != indexOfAccount) {
-			System.out.println("Password is incorrect, try again.");
-			tempPassword = in.nextLine();
-			passwordIndex = passwords.indexOf(tempPassword);
-		}
+		verifyPassword();
 		System.out.println("What would you like your new password to be?");
 		String newPassword = in.nextLine();
 		passwords.set(indexOfAccount, newPassword);
@@ -287,30 +279,25 @@ public class Menu {
 			indexOfAccount = usernames.indexOf(username);
 			System.out.println(usernames);
 			System.out.println(passwords);
-			if (indexOfAccount == -1) {
-				System.out.println("Incorrect username and/or password");
+			verifyLoginPassword(password);
+		}
+	}
+
+	private void verifyLoginPassword(String password) {
+		if (indexOfAccount == -1) {
+			System.out.println("Incorrect username and/or password");
+		} else {
+			if (passwords.get(indexOfAccount).equals(password)) {
+				double currentBalance = Double.parseDouble(balances.get(indexOfAccount));
+				account.setBalance(currentBalance);
+				loginComplete = true;
 			} else {
-				if (passwords.get(indexOfAccount).equals(password)) {
-					double currentBalance = Double.parseDouble(balances.get(indexOfAccount));
-					account.setBalance(currentBalance);
-					loginComplete = true;
-				} else {
-					System.out.println("Incorrect username and/or password");
-				}
+				System.out.println("Incorrect username and/or password");
 			}
 		}
 	}
 	
-	public void deleteAction() {
-		String pass = "";
-				while(!pass.equals(passwords.get(indexOfAccount))) {
-			System.out.println("Confirm your password: ");
-			pass = in.nextLine();
-		}
-			deleteAccount(pass);
-	}
-	
-	public void deleteAccount(String password) {
+	public void deleteAccount() {
 			passwords.remove(indexOfAccount);
 			usernames.remove(indexOfAccount);
 			balances.remove(indexOfAccount);
@@ -319,6 +306,18 @@ public class Menu {
 			namesFile.setContent(usernames);
 			balancesFile.setContent(balances);
 		}
+	
+	public void verifyPassword() {
+		System.out.println("Verify your current password");
+		in.nextLine();
+		String tempPassword = in.nextLine();
+		int passwordIndex = passwords.indexOf(tempPassword);
+		while (passwordIndex != indexOfAccount) {
+			System.out.println("Password is incorrect, try again.");
+			tempPassword = in.nextLine();
+			passwordIndex = passwords.indexOf(tempPassword);
+		}
+	}
 	
 	
 }
