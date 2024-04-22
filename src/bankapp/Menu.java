@@ -1,9 +1,5 @@
 package bankapp;
 
-//import java.io.File;
-//import java.io.FileNotFoundException;
-//import java.io.FileOutputStream;
-//import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -11,9 +7,6 @@ import java.util.ArrayList;
 public class Menu {
 	
 	private Scanner in;
-//	private Scanner usernameOutput;
-//	private Scanner passwordOutput;
-//	private Scanner balanceOutput;
 	private BankAccount account;
 	private boolean exit;
 	private boolean loginComplete;
@@ -310,18 +303,14 @@ public class Menu {
 	
 	public void deleteAction() {
 		String pass = "";
-		//want to check if password is correct, if not then reprompt. If it is correct then call deleteAccount()
-		while(!pass.equals(passwords.get(indexOfAccount))) {
+				while(!pass.equals(passwords.get(indexOfAccount))) {
 			System.out.println("Confirm your password: ");
 			pass = in.nextLine();
 		}
 			deleteAccount(pass);
 	}
 	
-	//get the index of the account(username, password, balance)
-		//create new printWriter, rewrite every username,password, balance EXCEPT deleted account
-	//UPDATE 4/16: deletes correct username and pass, but does not delete balance for some reason
-		public void deleteAccount(String password) {
+	public void deleteAccount(String password) {
 			passwords.remove(indexOfAccount);
 			usernames.remove(indexOfAccount);
 			balances.remove(indexOfAccount);
