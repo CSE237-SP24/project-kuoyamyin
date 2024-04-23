@@ -1,9 +1,5 @@
 package bankapp;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -11,80 +7,60 @@ import java.util.ArrayList;
 public class Menu {
 	
 	private Scanner in;
-	private Scanner usernameOutput;
-	private Scanner passwordOutput;
-	private Scanner balanceOutput;
 	private BankAccount account;
 	private boolean exit;
 	private boolean loginComplete;
-	private File namesFile;
-	private File passwordsFile;
-	private File balancesFile;
+	private FileObj namesFile;
+	private FileObj passwordsFile;
+	private FileObj balancesFile;
 	private int indexOfAccount;
-	private ArrayList<Double> balances;
+	private ArrayList<String> balances;
+	private ArrayList<String> usernames;
+	private ArrayList<String> passwords;
 
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
 		mainMenu.getFiles();
-		mainMenu.createScanners();
 		mainMenu.loginOrCreateAccount();
 		mainMenu.runBankFeatures();
 	}
 	
 	public Menu() {
 		this.account = new BankAccount();
+		this.in = new Scanner(System.in);
 		this.exit = false;
 		this.loginComplete = false;
+		this.balances = new ArrayList<>();
+		this.usernames = new ArrayList<>();
+		this.passwords = new ArrayList<>();
 		
 	}
 	
 	public void getFiles() {
-		namesFile = new File("../names.txt");
-		passwordsFile = new File("../passwords.txt");
-		balancesFile = new File("../balances.txt");
-	}
-	
-	public void createScanners() {
-		in = new Scanner(System.in);
-		try {
-			usernameOutput = new Scanner(namesFile);
-		} catch (FileNotFoundException e) {
-			System.out.println("usernameOutput scanner not created");
-			e.printStackTrace();
-		}
-		try {
-			passwordOutput = new Scanner(passwordsFile);
-		} catch (FileNotFoundException e) {
-			System.out.println("passwordOutput scanner not created");
-			e.printStackTrace();
-		}
-		try {
-			balanceOutput = new Scanner(balancesFile);
-		} catch (FileNotFoundException e) {
-			System.out.println("balanceOutput scanner not created");
-			e.printStackTrace();
-		}
+		namesFile = new FileObj("infoFiles/workingFiles/names.txt");
+		passwordsFile = new FileObj("infoFiles/workingFiles/passwords.txt");
+		balancesFile = new FileObj("infoFiles/workingFiles/balances.txt");
+		
+		usernames = namesFile.getContent();
+		passwords = passwordsFile.getContent();
+		balances = balancesFile.getContent();
 	}
 	
 	public void loginOrCreateAccount() {
 		int minChoice = 1;
 		int maxChoice = 3;
-		this.loginOrCreateAccountDisplay();
-		int choice = this.getValidUserInput(minChoice, maxChoice);
-		this.processingUserLoginSelection(choice);
-	}
-	
-	public void loginOrCreateAccountDisplay() {
 		System.out.println("");
 		System.out.println("1. Login");
 		System.out.println("2. Create Account");
 		System.out.println("3. Exit");
 		System.out.println("Select an action (enter number):");
+		int choice = this.getValidUserInput(minChoice, maxChoice);
+		this.processingUserLoginSelection(choice);
 	}
 	
 	public void processingUserLoginSelection(int choice) {
 		if (choice == 1) {
-			logInAction();
+			askForLogin();
 		} else if (choice == 2) {
 			createAccountAction();
 		} else if (choice == 3) {
@@ -98,13 +74,7 @@ public class Menu {
 		addNewName(accountInfo[0]);
 		addNewPassword(accountInfo[1]);
 		addNewBalance();
-		balances = new ArrayList<>();
-		while(balanceOutput.hasNextDouble()) {
-			balances.add(balanceOutput.nextDouble());
-		}
 		indexOfAccount = balances.size()-1;
-		
-		
 	}
 
 	private String[] getNewAccountInfo() {
@@ -117,55 +87,39 @@ public class Menu {
 		return accountInfo;
 	}
 
-	private void addNewBalance() {
-		try {
-			PrintWriter balancesWriter = new PrintWriter(new FileOutputStream(balancesFile, true));
-			balancesWriter.println(0);
-			balancesWriter.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("balancesFile not found.");
-			e.printStackTrace();
-		}
+	private void addNewBalance() { //testable
+		balances.add("0");
+		balancesFile.setContent(balances);
 	}
 
-	private void addNewPassword(String password) {
-		try {
-			PrintWriter passwordsWriter = new PrintWriter(new FileOutputStream(passwordsFile, true));
-			passwordsWriter.println(password);
-			passwordsWriter.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("passwordsFile not found.");
-			e.printStackTrace();
-		}
+	private void addNewPassword(String password) { //testable
+		passwords.add(password);
+		passwordsFile.setContent(passwords);
 	}
 
-	private void addNewName(String name) {
-		try {
-			PrintWriter namesWriter = new PrintWriter(new FileOutputStream(namesFile, true));
-			namesWriter.println(name);
-			namesWriter.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("namesFile not found.");
-			e.printStackTrace();
-		}
+	private void addNewName(String name) { //testable
+		usernames.add(name);
+		namesFile.setContent(usernames);
 	}
 	
 	public void runBankFeatures() {
 		while(!exit) {
 			int minChoice = 1;
-			int maxChoice = 4;
-			this.displayingOptions();
+			int maxChoice = 6;
+			System.out.println("");
+			displayOptions();
 			int choice = this.getValidUserInput(minChoice, maxChoice);
 			this.processingUserActionSelection(choice);
 		}
 	}
-	
-	public void displayingOptions() {
-		System.out.println("");
+
+	private void displayOptions() {
 		System.out.println("1. Check balance");
 		System.out.println("2. Deposit money");
 		System.out.println("3. Withdraw money");
-		System.out.println("4. Exit");
+		System.out.println("4. Delete account");
+		System.out.println("5. Manage Account (change username/password)");
+		System.out.println("6. Exit");
 		System.out.println("Select an action (enter number):");
 	}
 	
@@ -177,14 +131,15 @@ public class Menu {
 				choice = in.nextInt();
 				if (choice < min || choice > max) {
 					System.out.println("Invalid choice");
-					displayingOptions();
+					in.nextLine();
+					return getValidUserInput(min, max);
 				} else {
 					invalidChoice = false;
 				}
 			} catch (InputMismatchException e) {
 				System.out.println("Must enter an integer");
-				displayingOptions();
 				in.nextLine();
+				return getValidUserInput(min, max);
 			}
 		}
 		System.out.println("");
@@ -241,26 +196,16 @@ public class Menu {
 		} else if (choice == 3) {
 			withdrawAction();
 		} else if (choice == 4) {
+			verifyPassword();
+			deleteAccount();
 			exit = true;
-			updateBalancesFile();
-		}
-	}
-
-	private void updateBalancesFile() {
-		try {
-			PrintWriter exitWriter = new PrintWriter(balancesFile);
-			for(int i = 0; i < balances.size(); i++) {
-				if(indexOfAccount == i) {
-					exitWriter.println(account.getBalance());
-				} else {
-					exitWriter.println(balances.get(i));
-				}
-			}
-			exitWriter.close();
-			System.out.println("Account exited");
-		} catch (FileNotFoundException e){
-			System.out.println("balancesFile not found.");
-			e.printStackTrace();
+			System.out.println("Account deleted");
+		} else if (choice == 5) {
+			manageAccount();
+		} else if (choice == 6) {
+			exit = true;
+			balances.set(indexOfAccount, Double.toString(account.getBalance()));
+			balancesFile.setContent(balances);
 		}
 	}
 
@@ -278,30 +223,42 @@ public class Menu {
 		account.withdraw(withdrawAmount);
 		System.out.println("Amount withdrew: " + withdrawAmount);
 		System.out.println("New balance = " + String.format("%.2f", account.getBalance()));	}
-	
-	public BankAccount getAccount() {
-		return account;
-	}
-	
-	public void logInAction() {
-		ArrayList<String> usernames = new ArrayList<>();
-		ArrayList<String> passwords = new ArrayList<>();
-		balances = new ArrayList<>();
-		while(usernameOutput.hasNextLine()) {
-			usernames.add(usernameOutput.nextLine());
+
+	private void manageAccount() {
+		System.out.println("Enter 1 to change your username, 2 to change your password, or 3 to return to other options");
+		int userChoice = in.nextInt();
+		while (userChoice!= 1 && userChoice != 2 && userChoice!=3) {
+			System.out.println("Must enter either 1, 2, or 3");
 		}
-		while(passwordOutput.hasNextLine()) {
-			passwords.add(passwordOutput.nextLine());
+		if (userChoice == 1) {
+			System.out.println("What would you like your new username to be?");
+			in.nextLine();
+			String newUsername = in.nextLine();
+			changeUsername(newUsername);
 		}
-		while(balanceOutput.hasNextDouble()) {
-			balances.add(balanceOutput.nextDouble());
+		else if(userChoice == 2) {
+			verifyPassword();
+			System.out.println("What would you like your new password to be?");
+			String newPassword = in.nextLine();
+			changePassword(newPassword);
 		}
-		
-		askForLogin(usernames, passwords, balances);
-		
+		else if (userChoice == 3) {
+			System.out.println("");
+			displayOptions();
+		}
 	}
 
-	private void askForLogin(ArrayList<String> usernames, ArrayList<String> passwords, ArrayList<Double> balances) {
+	private void changeUsername(String newUsername) { //testable
+		usernames.set(indexOfAccount, newUsername);
+		namesFile.setContent(usernames);
+	}
+
+	private void changePassword(String newPassword) { //testable
+		passwords.set(indexOfAccount, newPassword);
+		passwordsFile.setContent(passwords);
+	}
+
+	private void askForLogin() {
 		in.nextLine();
 		while (!loginComplete) {
 			System.out.println("Username: ");
@@ -309,21 +266,47 @@ public class Menu {
 			System.out.println("Password: ");
 			String password = in.nextLine();
 			indexOfAccount = usernames.indexOf(username);
-			if (indexOfAccount == -1) {
-				System.out.println("Incorrect username and/or password");
+			System.out.println(usernames);
+			System.out.println(passwords);
+			verifyLoginPassword(password);
+		}
+	}
+
+	private void verifyLoginPassword(String password) {
+		if (indexOfAccount == -1) {
+			System.out.println("Incorrect username and/or password");
+		} else {
+			if (passwords.get(indexOfAccount).equals(password)) {
+				double currentBalance = Double.parseDouble(balances.get(indexOfAccount));
+				account.setBalance(currentBalance);
+				loginComplete = true;
 			} else {
-				double currentBalance = balances.get(indexOfAccount);
-				if (passwords.get(indexOfAccount).equals(password)) {
-					account.setBalance(currentBalance);
-					loginComplete = true;
-				} else {
-					System.out.println("login unsuccessful");
-				}
+				System.out.println("Incorrect username and/or password");
 			}
-			
 		}
 	}
 	
+	public void deleteAccount() {
+			passwords.remove(indexOfAccount);
+			usernames.remove(indexOfAccount);
+			balances.remove(indexOfAccount);
+			
+			passwordsFile.setContent(passwords);
+			namesFile.setContent(usernames);
+			balancesFile.setContent(balances);
+		}
+	
+	public void verifyPassword() {
+		System.out.println("Verify your current password");
+		in.nextLine();
+		String tempPassword = in.nextLine();
+		int passwordIndex = passwords.indexOf(tempPassword);
+		while (passwordIndex != indexOfAccount) {
+			System.out.println("Password is incorrect, try again.");
+			tempPassword = in.nextLine();
+			passwordIndex = passwords.indexOf(tempPassword);
+		}
+	}
 	
 	
 }

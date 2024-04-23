@@ -18,5 +18,5 @@ class MenuTests {
 		BankAccount account = m.getAccount();
 		assertEquals(50, account.getBalance(), 0.01);
 	}
-
+	
 }
