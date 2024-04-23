@@ -37,9 +37,9 @@ public class Menu {
 	}
 	
 	public void getFiles() {
-		namesFile = new FileObj("names.txt");
-		passwordsFile = new FileObj("passwords.txt");
-		balancesFile = new FileObj("balances.txt");
+		namesFile = new FileObj("infoFiles/names.txt");
+		passwordsFile = new FileObj("infoFiles/passwords.txt");
+		balancesFile = new FileObj("infoFiles/balances.txt");
 		
 		usernames = namesFile.getContent();
 		passwords = passwordsFile.getContent();

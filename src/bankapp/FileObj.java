@@ -37,6 +37,7 @@ public class FileObj {
 			for(int i = 0; i < content.size(); i++) {
 				fileWriter.println(content.get(i));
 			}
+			fileContent = content;
 			fileWriter.close();
 		} catch (FileNotFoundException e){
 			System.out.println("File not updated");
