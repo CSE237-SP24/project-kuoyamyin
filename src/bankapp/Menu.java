@@ -203,16 +203,10 @@ public class Menu {
 			manageAccount();
 		} else if (choice == 6) {
 			exit = true;
-//			updateBalancesFile();
 			balances.set(indexOfAccount, Double.toString(account.getBalance()));
 			balancesFile.setContent(balances);
 		}
 	}
-
-//	private void updateBalancesFile() { //testable
-//		balances.set(indexOfAccount, Double.toString(account.getBalance()));
-//		balancesFile.setContent(balances);
-//	}
 
 	private void depositAction() { //called once
 		System.out.println("How much would you like to deposit?");
@@ -228,12 +222,7 @@ public class Menu {
 		account.withdraw(withdrawAmount);
 		System.out.println("Amount withdrew: " + withdrawAmount);
 		System.out.println("New balance = " + String.format("%.2f", account.getBalance()));	}
-	
-	public BankAccount getAccount() {
-		return account;
-	}
-	
-	
+
 	private void manageAccount() {
 		System.out.println("Enter 1 to change your username, 2 to change your password, or 3 to return to other options");
 		int userChoice = in.nextInt();
@@ -255,18 +244,12 @@ public class Menu {
 		}
 	}
 
-	public void changeUsername(String newUsername) { //testable
-//		System.out.println("What would you like your new username to be?");
-//		in.nextLine();
-//		String newUsername = in.nextLine();
+	private void changeUsername(String newUsername) { //testable
 		usernames.set(indexOfAccount, newUsername);
 		namesFile.setContent(usernames);
 	}
 
 	public void changePassword(String newPassword) { //testable
-//		verifyPassword();
-//		System.out.println("What would you like your new password to be?");
-//		String newPassword = in.nextLine();
 		passwords.set(indexOfAccount, newPassword);
 		passwordsFile.setContent(passwords);
 	}
