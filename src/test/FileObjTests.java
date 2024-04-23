@@ -14,54 +14,54 @@ class FileObjTests {
 	void testGetContentUsernames() {
 		FileObj namesFile = new FileObj("infoFiles/testFiles/namesTest.txt");
 		
-		int numAccounts = namesFile.getContent().size();
+		int numUsernames = namesFile.getContent().size();
 		
-		assertTrue(numAccounts == 2);
+		assertTrue(numUsernames == 2);
 	}
 	
 	@Test
 	void testGetContentPasswords() {
 		FileObj passwordsFile = new FileObj("infoFiles/testFiles/passwordsTest.txt");
 		
-		int numAccounts = passwordsFile.getContent().size();
+		int numPasswords = passwordsFile.getContent().size();
 		
-		assertTrue(numAccounts == 2);
+		assertTrue(numPasswords == 2);
 	}
 	
 	@Test
 	void testGetContentBalances() {
 		FileObj balancesFile = new FileObj("infoFiles/testFiles/namesTest.txt");
 		
-		int numAccounts = balancesFile.getContent().size();
+		int numBalances = balancesFile.getContent().size();
 		
-		assertTrue(numAccounts == 2);
+		assertTrue(numBalances == 2);
 	}
 	
 	@Test
 	void testGetContentUsernamesEmpty() {
 		FileObj namesFile = new FileObj("infoFiles/testFiles/namesTestEmpty.txt");
 		
-		int numAccounts = namesFile.getContent().size();
+		int numUsernames = namesFile.getContent().size();
 		
-		assertTrue(numAccounts == 0);
+		assertTrue(numUsernames == 0);
 	}
 	
 	@Test
 	void testGetContentPasswordsEmpty() {
 		FileObj passwordsFile = new FileObj("infoFiles/testFiles/passwordsTestEmpty.txt");
 		
-		int numAccounts = passwordsFile.getContent().size();
+		int numPasswords = passwordsFile.getContent().size();
 		
-		assertTrue(numAccounts == 0);
+		assertTrue(numPasswords == 0);
 	}
 	
 	@Test
 	void testGetContentBalancesEmpty() {
 		FileObj balancesFile = new FileObj("infoFiles/testFiles/balancesTestEmpty.txt");
 		
-		int numAccounts = balancesFile.getContent().size();
+		int numBalances = balancesFile.getContent().size();
 		
-		assertTrue(numAccounts == 0);
+		assertTrue(numBalances == 0);
 	}
 	
 	@Test
@@ -93,12 +93,12 @@ class FileObjTests {
 		content.add("slim");
 		content.add("lee");
 		content.add("norris");
-		int oldNumAccounts = passwordsFile.getContent().size();
+		int oldNumPasswords = passwordsFile.getContent().size();
 		
 		passwordsFile.setContent(content);
-		int newNumAccounts = passwordsFile.getContent().size();
+		int newNumPasswords = passwordsFile.getContent().size();
 		
-		assertTrue(oldNumAccounts+2 == newNumAccounts);
+		assertTrue(oldNumPasswords+2 == newNumPasswords);
 		
 		//reset file
 		content.remove(3);
@@ -114,12 +114,12 @@ class FileObjTests {
 		content.add("63.12");
 		content.add("3.00");
 		content.add("105573.37");
-		int oldNumAccounts = balancesFile.getContent().size();
+		int oldNumBalances = balancesFile.getContent().size();
 		
 		balancesFile.setContent(content);
-		int newNumAccounts = balancesFile.getContent().size();
+		int newNumBalances = balancesFile.getContent().size();
 		
-		assertTrue(oldNumAccounts+2 == newNumAccounts);
+		assertTrue(oldNumBalances+2 == newNumBalances);
 		
 		//reset file
 		content.remove(3);
