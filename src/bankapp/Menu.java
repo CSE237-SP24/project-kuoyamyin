@@ -246,7 +246,10 @@ public class Menu {
 			changeUsername(newUsername);
 		}
 		else if(userChoice == 2) {
-			changePassword();
+			verifyPassword();
+			System.out.println("What would you like your new password to be?");
+			String newPassword = in.nextLine();
+			changePassword(newPassword);
 		}
 		else if (userChoice == 3) {
 			displayingOptions();
@@ -261,10 +264,10 @@ public class Menu {
 		namesFile.setContent(usernames);
 	}
 
-	private void changePassword() {
-		verifyPassword();
-		System.out.println("What would you like your new password to be?");
-		String newPassword = in.nextLine();
+	private void changePassword(String newPassword) {
+//		verifyPassword();
+//		System.out.println("What would you like your new password to be?");
+//		String newPassword = in.nextLine();
 		passwords.set(indexOfAccount, newPassword);
 		passwordsFile.setContent(passwords);
 	}
