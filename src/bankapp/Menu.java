@@ -106,22 +106,30 @@ public class Menu {
 		while(!exit) {
 			int minChoice = 1;
 			int maxChoice = 6;
-			this.displayingOptions();
+//			this.displayingOptions();
+			System.out.println("");
+			System.out.println("1. Check balance");
+			System.out.println("2. Deposit money");
+			System.out.println("3. Withdraw money");
+			System.out.println("4. Delete account");
+			System.out.println("5. Manage Account (change username/password)");
+			System.out.println("6. Exit");
+			System.out.println("Select an action (enter number):");
 			int choice = this.getValidUserInput(minChoice, maxChoice);
 			this.processingUserActionSelection(choice);
 		}
 	}
 	
-	public void displayingOptions() {
-		System.out.println("");
-		System.out.println("1. Check balance");
-		System.out.println("2. Deposit money");
-		System.out.println("3. Withdraw money");
-		System.out.println("4. Delete account");
-		System.out.println("5. Manage Account (change username/password)");
-		System.out.println("6. Exit");
-		System.out.println("Select an action (enter number):");
-	}
+//	public void displayingOptions() {
+//		System.out.println("");
+//		System.out.println("1. Check balance");
+//		System.out.println("2. Deposit money");
+//		System.out.println("3. Withdraw money");
+//		System.out.println("4. Delete account");
+//		System.out.println("5. Manage Account (change username/password)");
+//		System.out.println("6. Exit");
+//		System.out.println("Select an action (enter number):");
+//	}
 	
 	public int getValidUserInput(int min, int max) {
 		int choice = 0;
@@ -204,14 +212,16 @@ public class Menu {
 			manageAccount();
 		} else if (choice == 6) {
 			exit = true;
-			updateBalancesFile();
+//			updateBalancesFile();
+			balances.set(indexOfAccount, Double.toString(account.getBalance()));
+			balancesFile.setContent(balances);
 		}
 	}
 
-	private void updateBalancesFile() { //testable
-		balances.set(indexOfAccount, Double.toString(account.getBalance()));
-		balancesFile.setContent(balances);
-	}
+//	private void updateBalancesFile() { //testable
+//		balances.set(indexOfAccount, Double.toString(account.getBalance()));
+//		balancesFile.setContent(balances);
+//	}
 
 	private void depositAction() {
 		System.out.println("How much would you like to deposit?");
@@ -252,7 +262,15 @@ public class Menu {
 			changePassword(newPassword);
 		}
 		else if (userChoice == 3) {
-			displayingOptions();
+//			displayingOptions();
+			System.out.println("");
+			System.out.println("1. Check balance");
+			System.out.println("2. Deposit money");
+			System.out.println("3. Withdraw money");
+			System.out.println("4. Delete account");
+			System.out.println("5. Manage Account (change username/password)");
+			System.out.println("6. Exit");
+			System.out.println("Select an action (enter number):");
 		}
 	}
 
@@ -264,7 +282,7 @@ public class Menu {
 		namesFile.setContent(usernames);
 	}
 
-	private void changePassword(String newPassword) {
+	private void changePassword(String newPassword) { //testable
 //		verifyPassword();
 //		System.out.println("What would you like your new password to be?");
 //		String newPassword = in.nextLine();
