@@ -37,9 +37,19 @@ public class Menu {
 	}
 	
 	public void getFiles() {
-		namesFile = new FileObj("infoFiles/workingFiles/names.txt");
-		passwordsFile = new FileObj("infoFiles/workingFiles/passwords.txt");
-		balancesFile = new FileObj("infoFiles/workingFiles/balances.txt");
+		namesFile = new FileObj("../infoFiles/workingFiles/names.txt");
+		passwordsFile = new FileObj("../infoFiles/workingFiles/passwords.txt");
+		balancesFile = new FileObj("../infoFiles/workingFiles/balances.txt");
+		
+		usernames = namesFile.getContent();
+		passwords = passwordsFile.getContent();
+		balances = balancesFile.getContent();
+	}
+	
+	public void getTestingFiles() {
+		namesFile = new FileObj("infoFiles/testFiles/namesTest.txt");
+		passwordsFile = new FileObj("infoFiles/testFiles/passwordsTest.txt");
+		balancesFile = new FileObj("infoFiles/testFiles/balancesTest.txt");
 		
 		usernames = namesFile.getContent();
 		passwords = passwordsFile.getContent();
@@ -73,7 +83,7 @@ public class Menu {
 		String[] accountInfo = getNewAccountInfo();
 		addNewName(accountInfo[0], usernames);
 		addNewPassword(accountInfo[1], passwords);
-		addNewBalance();
+		addNewBalance(balances);
 		indexOfAccount = balances.size()-1;
 	}
 
@@ -87,17 +97,20 @@ public class Menu {
 		return accountInfo;
 	}
 
-	public void addNewBalance() { //testable
+	public void addNewBalance(ArrayList<String> balancesArray) {
+		balances = balancesArray;
 		balances.add("0");
 		balancesFile.setContent(balances);
 	}
 
-	public void addNewPassword(String password, ArrayList<String> passwords) { //testable
+	public void addNewPassword(String password, ArrayList<String> pwords) {
+		passwords = pwords;
 		passwords.add(password);
 		passwordsFile.setContent(passwords);
 	}
 
-	public void addNewName(String name, ArrayList<String> usernames) { //testable
+	public void addNewName(String name, ArrayList<String> unames) {
+		usernames = unames;
 		usernames.add(name);
 		namesFile.setContent(usernames);
 	}
@@ -208,7 +221,7 @@ public class Menu {
 		}
 	}
 
-	private void depositAction() { //called once
+	private void depositAction() { 
 		System.out.println("How much would you like to deposit?");
 		double depositAmount = getValidDepositAmount();
 		account.deposit(depositAmount);
@@ -216,7 +229,7 @@ public class Menu {
 		System.out.println("New balance = " + String.format("%.2f", account.getBalance()));
 	}
 
-	private void withdrawAction() { //called once
+	private void withdrawAction() { 
 		System.out.println("How much would you like to withdraw?");
 		double withdrawAmount = getValidWithdrawAmount(); 
 		account.withdraw(withdrawAmount);
@@ -233,23 +246,25 @@ public class Menu {
 			System.out.println("What would you like your new username to be?");
 			in.nextLine();
 			String newUsername = in.nextLine();
-			changeUsername(indexOfAccount, newUsername);
+			changeUsername(indexOfAccount, newUsername, usernames);
 		} else if(userChoice == 2) {
 			verifyPassword();
 			System.out.println("What would you like your new password to be?");
 			String newPassword = in.nextLine();
-			changePassword(indexOfAccount, newPassword);
+			changePassword(indexOfAccount, newPassword, passwords);
 		} else if (userChoice == 3) {
 			displayingOptions();
 		}
 	}
 
-	public void changeUsername(int index, String newUsername) { //testable
+	public void changeUsername(int index, String newUsername, ArrayList<String> unames) {
+		usernames = unames;
 		usernames.set(index, newUsername);
 		namesFile.setContent(usernames);
 	}
 
-	public void changePassword(int index, String newPassword) { //testable
+	public void changePassword(int index, String newPassword, ArrayList<String> pwords) { 
+		passwords = pwords;
 		passwords.set(index, newPassword);
 		passwordsFile.setContent(passwords);
 	}
@@ -262,8 +277,6 @@ public class Menu {
 			System.out.println("Password: ");
 			String password = in.nextLine();
 			indexOfAccount = usernames.indexOf(username);
-			System.out.println(usernames);
-			System.out.println(passwords);
 			verifyLoginPassword(password);
 		}
 	}
@@ -293,7 +306,7 @@ public class Menu {
 		}
 	
 	public void verifyPassword() {
-		System.out.println("Verify your current password");
+		System.out.println("Verify your current password:");
 		in.nextLine();
 		String tempPassword = in.nextLine();
 		int passwordIndex = passwords.indexOf(tempPassword);
