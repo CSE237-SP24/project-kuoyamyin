@@ -103,14 +103,14 @@ public class Menu {
 		balancesFile.setContent(balances);
 	}
 
-	public void addNewPassword(String password, ArrayList<String> pwords) {
-		passwords = pwords;
+	public void addNewPassword(String password, ArrayList<String> passwordsArray) {
+		passwords = passwordsArray;
 		passwords.add(password);
 		passwordsFile.setContent(passwords);
 	}
 
-	public void addNewName(String name, ArrayList<String> unames) {
-		usernames = unames;
+	public void addNewName(String name, ArrayList<String> usernamesArray) {
+		usernames = usernamesArray;
 		usernames.add(name);
 		namesFile.setContent(usernames);
 	}
