@@ -10,14 +10,20 @@ Scott: created bank account object and developed check balance action
 
 # Iteration 2
 Emma: created file class to store user information
-Eric: developed logIn action
+
+Eric: developed logIn actio
+
 Scott: developed create account action
 
 # Iteration 3
 Below are the features that were completed by each person during this iteration.
+
 Emma: developed change username action and added unit tests for the menu class
+
 Eric: developed delete account action and added unit tests for the menu class
+
 Scott: developed change password action and added unit tests for the file class
+
 
 Currently, everything that we implemented is working well.
 
