@@ -2,7 +2,7 @@
 We are creating a virtual bank where users can create bank accounts, check their balance, withdraw and deposit money. These bank accounts will require a password to be accessed. Users will be able to change their account name and password. They can also delete their account. We will use files to keep track of user accounts, passwords, and balances.
 
 # Iteration 1
-Emma: developed withdraw money action
+Emma: developed withdraw money action \n
 Eric: developeddeposit money action
 Scott: created bank account object and developed check balance action
 
