@@ -71,8 +71,8 @@ public class Menu {
 	
 	private void createAccountAction() {
 		String[] accountInfo = getNewAccountInfo();
-		addNewName(accountInfo[0]);
-		addNewPassword(accountInfo[1]);
+		addNewName(accountInfo[0], usernames);
+		addNewPassword(accountInfo[1], passwords);
 		addNewBalance();
 		indexOfAccount = balances.size()-1;
 	}
@@ -87,17 +87,17 @@ public class Menu {
 		return accountInfo;
 	}
 
-	private void addNewBalance() { //testable
+	public void addNewBalance() { //testable
 		balances.add("0");
 		balancesFile.setContent(balances);
 	}
 
-	private void addNewPassword(String password) { //testable
+	public void addNewPassword(String password, ArrayList<String> passwords) { //testable
 		passwords.add(password);
 		passwordsFile.setContent(passwords);
 	}
 
-	private void addNewName(String name) { //testable
+	public void addNewName(String name, ArrayList<String> usernames) { //testable
 		usernames.add(name);
 		namesFile.setContent(usernames);
 	}
@@ -106,14 +106,15 @@ public class Menu {
 		while(!exit) {
 			int minChoice = 1;
 			int maxChoice = 6;
-			System.out.println("");
-			displayOptions();
+			this.displayingOptions();
 			int choice = this.getValidUserInput(minChoice, maxChoice);
+			System.out.println("");
 			this.processingUserActionSelection(choice);
 		}
 	}
-
-	private void displayOptions() {
+	
+	public void displayingOptions() {
+		System.out.println("");
 		System.out.println("1. Check balance");
 		System.out.println("2. Deposit money");
 		System.out.println("3. Withdraw money");
@@ -133,16 +134,14 @@ public class Menu {
 					System.out.println("Invalid choice");
 					in.nextLine();
 					return getValidUserInput(min, max);
-				} else {
+				} else 
 					invalidChoice = false;
-				}
 			} catch (InputMismatchException e) {
 				System.out.println("Must enter an integer");
 				in.nextLine();
 				return getValidUserInput(min, max);
 			}
 		}
-		System.out.println("");
 		return choice;
 	}
 	
@@ -209,7 +208,7 @@ public class Menu {
 		}
 	}
 
-	private void depositAction() {
+	private void depositAction() { //called once
 		System.out.println("How much would you like to deposit?");
 		double depositAmount = getValidDepositAmount();
 		account.deposit(depositAmount);
@@ -217,7 +216,7 @@ public class Menu {
 		System.out.println("New balance = " + String.format("%.2f", account.getBalance()));
 	}
 
-	private void withdrawAction() {
+	private void withdrawAction() { //called once
 		System.out.println("How much would you like to withdraw?");
 		double withdrawAmount = getValidWithdrawAmount(); 
 		account.withdraw(withdrawAmount);
@@ -234,27 +233,24 @@ public class Menu {
 			System.out.println("What would you like your new username to be?");
 			in.nextLine();
 			String newUsername = in.nextLine();
-			changeUsername(newUsername);
-		}
-		else if(userChoice == 2) {
+			changeUsername(indexOfAccount, newUsername);
+		} else if(userChoice == 2) {
 			verifyPassword();
 			System.out.println("What would you like your new password to be?");
 			String newPassword = in.nextLine();
-			changePassword(newPassword);
-		}
-		else if (userChoice == 3) {
-			System.out.println("");
-			displayOptions();
+			changePassword(indexOfAccount, newPassword);
+		} else if (userChoice == 3) {
+			displayingOptions();
 		}
 	}
 
-	private void changeUsername(String newUsername) { //testable
-		usernames.set(indexOfAccount, newUsername);
+	public void changeUsername(int index, String newUsername) { //testable
+		usernames.set(index, newUsername);
 		namesFile.setContent(usernames);
 	}
 
-	private void changePassword(String newPassword) { //testable
-		passwords.set(indexOfAccount, newPassword);
+	public void changePassword(int index, String newPassword) { //testable
+		passwords.set(index, newPassword);
 		passwordsFile.setContent(passwords);
 	}
 
